@@ -1,0 +1,20 @@
+---
+
+- stat: path=/usr/bin/docker
+  register: docker_stat
+- name: Copy Docker installer script to remote
+  copy: src=files/get_docker_com.sh dest=/tmp/get_docker_com.sh mode=777
+  when: docker_stat.stat.exists == False
+- name: Install Docker Engine
+  command: sh /tmp/get_docker_com.sh
+  become: True
+  when: docker_stat.stat.exists == False
+- name: Check Docker Engine install
+  file:
+    path: /usr/bin/docker
+    state: file
+  when: docker_stat.stat.exists == False
+- name: Docker install cleanup
+  command: rm -f /tmp/get_docker_com.sh
+  when: docker_stat.stat.exists == False
+
