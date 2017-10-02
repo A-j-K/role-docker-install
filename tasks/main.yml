@@ -17,7 +17,8 @@
 - name: Docker install cleanup
   command: rm -f /tmp/get_docker_com.sh
   when: docker_stat.stat.exists == False
-- name: Docker enable at startup
-  command: systemctl enable docker.service
-- name: Docker start
-  command: service docker start
+- name: Enable Docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
